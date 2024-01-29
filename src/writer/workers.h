@@ -20,8 +20,23 @@
 #ifndef OPENZIM_LIBZIM_WORKERS_H
 #define OPENZIM_LIBZIM_WORKERS_H
 
+// platform dependent code for setting thread names
+#ifdef _WIN32
+#include <Windows.h>
+// Windows
+#define SET_THREAD_NAME(thread, name) SetThreadDescription(thread.native_handle(), name)
+#elif defined(__linux__) || defined(__APPLE__)
+// Linux and MacOS
+#include <pthread.h>
+#define SET_THREAD_NAME(thread, name) pthread_setname_np(thread.native_handle(), name)
+#else
+// For other platforms, define an empty macro
+#define SET_THREAD_NAME(thread, name)
+#endif
+
 #include "tools.h"
 #include "creatordata.h"
+
 
 namespace zim {
 namespace writer {

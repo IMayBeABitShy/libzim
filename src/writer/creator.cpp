@@ -145,10 +145,12 @@ namespace zim
       for(unsigned i=0; i<m_nbWorkers; i++)
       {
         std::thread thread(taskRunner, this->data.get());
+        SET_THREAD_NAME(thread, "Task Runner");
         data->workerThreads.push_back(std::move(thread));
       }
 
       data->writerThread = std::thread(clusterWriter, this->data.get());
+      SET_THREAD_NAME(data->writerThread, "Writer Thread");
     }
 
     void Creator::addItem(std::shared_ptr<Item> item)
